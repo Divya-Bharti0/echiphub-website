@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  
+  <!-- Critical Viewport Meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  
+  <!-- SEO & Primary Meta -->
+  <title>eChipHub — Semiconductor & EDA Chip Design Platform</title>
+  <meta name="description" content="eChipHub provides hands-on training, virtual labs, and workshops in electronics and emerging technologies for the semiconductor industry." />
+  <meta name="keywords" content="semiconductor, EDA, chip design, verilog, RISC-V, OpenLane, silicon fabrication, VLSI training, MeitY, NIELIT" />
+  <meta name="author" content="eChipHub | NIELIT | SoCTeamup" />
+  
+  <!-- Theme & PWA -->
+  <meta name="theme-color" content="#0B1220" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Preconnect to improve loading speed -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- Favicon / Apple Touch Icon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Open Graph (Social Sharing) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://echiphub.in/" />
+  <meta property="og:title" content="eChipHub — Semiconductor & EDA Chip Design Platform" />
+  <meta property="og:description" content="Hands-on training, cloud-hosted ChipCraft virtual labs and open-source RTL-to-GDSII flows." />
+  <meta property="og:image" content="https://echiphub.in/og-image.jpg" /> <!-- Recommended: add an og image -->
+  
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="eChipHub — Semiconductor & EDA Chip Design Platform" />
+  <meta name="twitter:description" content="Hands-on training, cloud-hosted ChipCraft virtual labs and open-source RTL-to-GDSII flows." />
+
+  <!-- Google Fonts (Optional: Use Swap to avoid invisible text during load) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+  
+  <!-- Root entry point for React -->
+  <div id="root"></div>
+
+  <!-- Main script -->
+  <script type="module" src="/src/main.tsx"></script>
+  
+  <!-- Optional: Loading Indicator (visible until React mounts) -->
+  <style>
+    #root:empty::before {
+      content: "Loading eChipHub...";
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Inter', sans-serif;
+      color: #374151;
+    }
+  </style>
+</body>
+</html>
