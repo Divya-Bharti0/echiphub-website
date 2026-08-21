@@ -13,7 +13,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen antialiased bg-[#f6f8fc]">
-      <Navbar onRegister={() => setModalOpen(true)} />
+      <Navbar />
 
       <main>
         <Marquee />

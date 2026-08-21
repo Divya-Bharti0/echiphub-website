@@ -251,10 +251,59 @@ img, video, canvas, svg {
   .partner-logo-group {
     gap: 12px;
     min-width: 0;
+    flex: 0 1 auto;
   }
 
   .partner-logo-group img {
     max-width: 88px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .navbar-row {
+    gap: clamp(12px, 1.5vw, 28px);
+  }
+
+  .partner-logo-group {
+    flex: 0 1 clamp(420px, 42vw, 610px);
+    gap: clamp(8px, 1vw, 18px);
+  }
+
+  .partner-logo-group a {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .partner-logo-group img {
+    width: 100%;
+    max-width: clamp(74px, 9vw, 150px);
+    height: clamp(32px, 3.2vw, 44px);
+    object-fit: contain;
+  }
+
+  .navbar-desktop-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .navbar-nav-list {
+    justify-content: flex-end;
+    gap: clamp(7px, .8vw, 16px);
+    min-width: 0;
+  }
+
+  .navbar-nav-list .nav-link {
+    white-space: nowrap;
+    font-size: clamp(12px, .95vw, 14.5px);
+  }
+
+  .navbar-login {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding-inline: clamp(12px, 1.2vw, 20px);
   }
 }
 

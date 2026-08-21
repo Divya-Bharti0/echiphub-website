@@ -1,22 +1,21 @@
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { PARTNERS } from '../lib/courseData'
 
 const NAV = [
-  { name: 'Home',       href: '#' },
-  { name: 'Courses',    href: '#courses' },
-  { name: 'Virtual Labs', href: '#virtual-lab' },
-  { name: 'Learning Paths', href: '#learning-paths' },
-  { name: 'Resources',  href: '#opensource' },
-  { name: 'Community',  href: 'https://community.echiphub.in/', ext: true },
-  { name: 'About',      href: '#alliances' },
+  { name: 'Home', href: 'https://echiphub.in/' },
+  { name: 'Courses', href: 'https://echiphub.in/#' },
+  { name: 'Workshops', href: 'https://echiphub.in/workshops/' },
+  { name: 'HelpDesk', href: 'https://helpdesk.echiphub.in/keycloaksso' },
+  { name: 'PDK', href: 'https://verify.echiphub.in/' },
+  { name: 'Community', href: 'https://community.echiphub.in/sso-login/' },
+  { name: 'Alliances', href: 'https://echiphub.in/academic-alliances/' },
+  { name: 'More', href: 'https://echiphub.in/#' },
 ]
 
-interface NavbarProps {
-  onRegister: () => void
-}
+const LOGIN_URL = 'https://echiphub.in/wp-login.php'
 
-export default function Navbar({ onRegister }: NavbarProps) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen]         = useState(false)
   const [activeHash, setActiveHash] = useState('#')
@@ -24,16 +23,7 @@ export default function Navbar({ onRegister }: NavbarProps) {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 12)
-      const secs = ['#alliances', '#virtual-lab', '#learning-paths', '#opensource', '#highlights', '#courses']
-      let cur = '#'
-      for (const s of secs) {
-        const el = document.querySelector(s)
-        if (el) {
-          const r = el.getBoundingClientRect()
-          if (r.top <= 220 && r.bottom >= 80) { cur = s; break }
-        }
-      }
-      setActiveHash(cur)
+      setActiveHash('#')
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
@@ -55,12 +45,12 @@ export default function Navbar({ onRegister }: NavbarProps) {
       }}
     >
       <div
-        className={`max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-6 transition-[padding] duration-300 ${
+        className={`navbar-row w-full max-w-[100vw] min-w-0 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-6 transition-[padding] duration-300 ${
           scrolled ? 'py-2.5' : 'py-3.5'
         }`}
       >
         {/* ── Institutional logos ── */}
-        <div className="partner-logo-group flex items-center gap-4 lg:gap-6 shrink-0" role="list" aria-label="Partner logos">
+        <div className="partner-logo-group flex items-center gap-4 lg:gap-6 min-w-0" role="list" aria-label="Partner logos">
           {PARTNERS.map(l => (
             <a
               key={l.name}
@@ -82,15 +72,16 @@ export default function Navbar({ onRegister }: NavbarProps) {
         </div>
 
         {/* ── Desktop nav ── */}
-        <nav className="hidden xl:block" aria-label="Main navigation">
-          <ul className="flex items-center gap-7">
+        <nav className="navbar-desktop-nav hidden xl:block min-w-0" aria-label="Main navigation">
+          <ul className="navbar-nav-list flex items-center gap-7">
             {NAV.map(l => {
-              const isActive = activeHash === l.href
+              const isActive = l.name === 'Home' && activeHash === '#'
               return (
                 <li key={l.name}>
                   <a
                     href={l.href}
-                    {...(l.ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     data-active={isActive}
                     aria-current={isActive ? 'page' : undefined}
                     className={`nav-link text-[14.5px] font-semibold transition-colors duration-200 ${
@@ -106,22 +97,12 @@ export default function Navbar({ onRegister }: NavbarProps) {
         </nav>
 
         {/* ── Auth buttons + hamburger ── */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            onClick={onRegister}
-            className="register-button btn-shine px-5 py-2.5 rounded-full text-[13.5px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
-            style={{
-              background: 'linear-gradient(135deg, #2254C4 0%, #29abe2 100%)',
-              boxShadow: '0 6px 20px rgba(34,84,196,0.32)',
-            }}
-          >
-            Register
-          </button>
+        <div className="navbar-actions flex items-center gap-2.5 shrink-0">
           <a
-            href="https://echiphub.in/wp-login.php"
+            href={LOGIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-shine hidden sm:inline-block px-5 py-2.5 rounded-full text-[13.5px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
+            className="navbar-login btn-shine hidden sm:inline-block px-5 py-2.5 rounded-full text-[13.5px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
             style={{ background: '#0f172a', boxShadow: '0 6px 18px rgba(15,23,42,0.24)' }}
           >
             Login
@@ -156,7 +137,8 @@ export default function Navbar({ onRegister }: NavbarProps) {
               <li key={l.name}>
                 <a
                   href={l.href}
-                  {...(l.ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
                   className="block py-2.5 text-[15px] font-semibold text-[#1c1d1f] hover:text-[#2254C4] transition-colors rounded-lg px-2"
                 >
@@ -166,7 +148,7 @@ export default function Navbar({ onRegister }: NavbarProps) {
             ))}
             <li className="pt-3 border-t border-[#f1f5f9]">
               <a
-                href="https://echiphub.in/wp-login.php"
+                href={LOGIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-center py-2.5 rounded-full text-[14px] font-bold text-white bg-[#0f172a] sm:hidden"

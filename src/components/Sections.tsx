@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, MouseEvent } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { STATS, HIGHLIGHTS, LIFECYCLE, PROGRAMS, PARTNERS, GALLERY } from '../lib/courseData'
-import ChipGraphic, { MiniIcon } from './ChipGraphic'
+import { MouseEvent, useEffect, useRef, useState } from 'react'
 import { useDeviceTier } from '../hooks/useDeviceTier'
+import { GALLERY, HIGHLIGHTS, LIFECYCLE, PARTNERS, PROGRAMS, STATS } from '../lib/courseData'
+import ChipGraphic, { MiniIcon } from './ChipGraphic'
 
 interface HeadingProps {
   eyebrow: string
