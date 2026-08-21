@@ -170,8 +170,8 @@ export default function CourseCatalog({ modalOpen }: CourseCatalogProps) {
         {/* ── coverflow stage ── */}
         <div
           ref={stageRef}
-          className="relative select-none overflow-hidden"
-          style={{ height: isMobile ? 600 : 620, perspective: 1600 }}
+          className="course-catalog-stage relative select-none overflow-hidden"
+          style={{ height: isMobile ? 'min(600px, 154vw)' : 620, perspective: 1600 }}
           onMouseEnter={() => { paused.current = true }}
           onMouseLeave={() => { paused.current = false; drag.current.on = false }}
           onPointerDown={onDown}
@@ -189,7 +189,7 @@ export default function CourseCatalog({ modalOpen }: CourseCatalogProps) {
               return (
                 <motion.div
                   key={c.id}
-                  className="absolute top-0 left-1/2"
+                  className="course-catalog-card absolute top-0 left-1/2"
                   style={{
                     width: isMobile ? 'min(86vw, 360px)' : 380,
                     marginLeft: isMobile ? 'min(-43vw, -180px)' : -190,

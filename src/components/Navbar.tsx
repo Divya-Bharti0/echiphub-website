@@ -60,7 +60,7 @@ export default function Navbar({ onRegister }: NavbarProps) {
         }`}
       >
         {/* ── Institutional logos ── */}
-        <div className="flex items-center gap-4 lg:gap-6 shrink-0" role="list" aria-label="Partner logos">
+        <div className="partner-logo-group flex items-center gap-4 lg:gap-6 shrink-0" role="list" aria-label="Partner logos">
           {PARTNERS.map(l => (
             <a
               key={l.name}
@@ -109,7 +109,7 @@ export default function Navbar({ onRegister }: NavbarProps) {
         <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={onRegister}
-            className="btn-shine px-5 py-2.5 rounded-full text-[13.5px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
+            className="register-button btn-shine px-5 py-2.5 rounded-full text-[13.5px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
             style={{
               background: 'linear-gradient(135deg, #2254C4 0%, #29abe2 100%)',
               boxShadow: '0 6px 20px rgba(34,84,196,0.32)',

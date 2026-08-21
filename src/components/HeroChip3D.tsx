@@ -175,11 +175,11 @@ function FloatingDataParticles({ count }: { count: number }) {
 
 export function HeroChip3D() {
   const { isLow, reduced } = useDeviceTier();
-  const particleCount = isLow ? 16 : 36;
+  const particleCount = isLow || reduced ? 10 : 36;
 
   return (
     <div
-      className="relative w-full h-full flex items-center justify-center select-none"
+      className="hero-chip-3d relative w-full h-full flex items-center justify-center select-none"
       aria-hidden="true"
     >
       {/* Background Radial Glow */}
@@ -199,7 +199,7 @@ export function HeroChip3D() {
         <Canvas
           shadows={{ type: THREE.PCFShadowMap }}
           camera={{ position: [0, 3.2, 5.2], fov: 42 }}
-          dpr={isLow ? [1, 1] : [1, 1.5]}
+          dpr={[1, 1]}
           gl={{
             antialias: true,
             alpha: true,

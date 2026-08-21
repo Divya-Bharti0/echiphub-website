@@ -62,7 +62,7 @@ export function Stats() {
           title="Building India's semiconductor workforce"
           sub="Nationwide participation across NIELIT centres, workshops and certification programmes."
         />
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {STATS.map((s, i) => (
             <motion.div
               key={s.label}
