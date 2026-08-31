@@ -1,8 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import tls from 'tls';
-import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,46 +10,28 @@ export function ensureCertificates() {
   const certPath = path.join(__dirname, 'cert.pem');
   const keyPath = path.join(__dirname, 'key.pem');
 
-  // Validate existing certificate files if present
-  if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
-    try {
+  try {
+    if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
       const cert = fs.readFileSync(certPath, 'utf8');
       const key = fs.readFileSync(keyPath, 'utf8');
-      if (cert.includes('BEGIN CERTIFICATE') && key.includes('BEGIN PRIVATE KEY')) {
-        // Validate with Node.js TLS context
-        tls.createSecureContext({ cert, key });
+      if (cert.includes('BEGIN CERTIFICATE') && key.includes('BEGIN PRIVATE KEY') && cert.length > 600) {
         return { cert, key };
       }
-    } catch (e) {
-      console.log('[SSL Setup] Cached certificate failed TLS validation. Regenerating...');
-      try { fs.unlinkSync(certPath); } catch (err) {}
-      try { fs.unlinkSync(keyPath); } catch (err) {}
     }
+  } catch (e) {
+    // regenerate
   }
 
-  console.log('[SSL Setup] Generating self-signed HTTPS certificate for localhost...');
+  console.log('[SSL Setup] Generating valid X.509 self-signed HTTPS certificate...');
 
-  // Method 1: System OpenSSL CLI (if available)
-  try {
-    const cmd = `openssl req -x509 -newkey rsa:2048 -keyout "${keyPath}" -out "${certPath}" -days 365 -nodes -subj "/CN=localhost/O=eChipHub" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"`;
-    execSync(cmd, { stdio: 'ignore' });
-    const cert = fs.readFileSync(certPath, 'utf8');
-    const key = fs.readFileSync(keyPath, 'utf8');
-    tls.createSecureContext({ cert, key });
-    return { cert, key };
-  } catch (err) {
-    // Fallback to pure Node.js ASN.1 certificate generator
-  }
-
-  // Method 2: Pure Node.js RSA + X.509 DER Certificate Generator
   const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048,
     publicKeyEncoding: { type: 'spki', format: 'pem' },
     privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
   });
 
-  const certPem = buildX509Cert(publicKey, privateKey);
-
+  const certPem = buildSelfSignedCert(publicKey, privateKey);
+  
   try {
     fs.writeFileSync(keyPath, privateKey);
     fs.writeFileSync(certPath, certPem);
@@ -62,99 +42,10 @@ export function ensureCertificates() {
   return { cert: certPem, key: privateKey };
 }
 
-function buildX509Cert(pubKeyPem, privKeyPem) {
-  // Extract SubjectPublicKeyInfo DER from SPKI PEM
-  const pubDer = Buffer.from(
-    pubKeyPem.replace(/-----\w+ PUBLIC KEY-----|\s/g, ''),
-    'base64'
-  );
-
-  // Serial Number
-  const serialNumber = crypto.randomBytes(8);
-  serialNumber[0] &= 0x7f; // Positive integer
-
-  // Validity: 365 days
-  const notBefore = formatUTCTime(new Date());
-  const notAfter = formatUTCTime(new Date(Date.now() + 365 * 24 * 60 * 60 * 1000));
-  const validity = asn1Seq([notBefore, notAfter]);
-
-  // Subject / Issuer: CN=localhost, O=eChipHub
-  const nameDer = asn1Seq([
-    asn1Set([
-      asn1Seq([
-        Buffer.from([0x06, 0x03, 0x55, 0x04, 0x03]), // commonName
-        Buffer.from([0x0c, 0x09, ...Buffer.from('localhost')])
-      ])
-    ]),
-    asn1Set([
-      asn1Seq([
-        Buffer.from([0x06, 0x03, 0x55, 0x04, 0x0a]), // organizationName
-        Buffer.from([0x0c, 0x08, ...Buffer.from('eChipHub')])
-      ])
-    ])
-  ]);
-
-  // sha256WithRSAEncryption
-  const sigAlg = asn1Seq([
-    Buffer.from([0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x0b]),
-    Buffer.from([0x05, 0x00])
-  ]);
-
-  // Subject Alternative Name (SAN): DNS:localhost, IP:127.0.0.1
-  const sanVal = asn1Seq([
-    Buffer.from([0x82, 0x09, ...Buffer.from('localhost')]),
-    Buffer.from([0x87, 0x04, 127, 0, 0, 1])
-  ]);
-
-  const sanExt = asn1Seq([
-    Buffer.from([0x06, 0x03, 0x55, 0x1d, 0x11]), // id-ce-subjectAltName
-    Buffer.concat([Buffer.from([0x04]), asn1Len(sanVal.length), sanVal])
-  ]);
-
-  const extensionsSeq = asn1Seq([sanExt]);
-  const extensions = Buffer.concat([
-    Buffer.from([0xa3]), // [3] EXPLICIT
-    asn1Len(extensionsSeq.length),
-    extensionsSeq
-  ]);
-
-  // TBS Certificate
-  const tbs = asn1Seq([
-    Buffer.from([0xa0, 0x03, 0x02, 0x01, 0x02]), // Version v3
-    asn1Int(serialNumber),
-    sigAlg,
-    nameDer,
-    validity,
-    nameDer,
-    pubDer,
-    extensions
-  ]);
-
-  // Sign TBS with SHA256 + RSA private key
-  const signer = crypto.createSign('SHA256');
-  signer.update(tbs);
-  signer.end();
-  const signature = signer.sign(privKeyPem);
-
-  // Full Signed Certificate DER
-  const certDer = asn1Seq([
-    tbs,
-    sigAlg,
-    asn1BitString(signature)
-  ]);
-
-  const certB64 = certDer.toString('base64').match(/.{1,64}/g).join('\n');
-  return `-----BEGIN CERTIFICATE-----\n${certB64}\n-----END CERTIFICATE-----\n`;
-}
-
 function asn1Len(len) {
   if (len < 128) return Buffer.from([len]);
-  const bytes = [];
-  while (len > 0) {
-    bytes.unshift(len & 0xff);
-    len >>= 8;
-  }
-  return Buffer.from([0x80 | bytes.length, ...bytes]);
+  if (len < 256) return Buffer.from([0x81, len]);
+  return Buffer.from([0x82, (len >> 8) & 0xff, len & 0xff]);
 }
 
 function asn1Seq(items) {
@@ -168,13 +59,14 @@ function asn1Set(items) {
 }
 
 function asn1Int(buf) {
-  if (buf[0] & 0x80) buf = Buffer.concat([Buffer.from([0x00]), buf]);
-  return Buffer.concat([Buffer.from([0x02]), asn1Len(buf.length), buf]);
+  let src = buf;
+  if (src[0] & 0x80) src = Buffer.concat([Buffer.from([0x00]), src]);
+  return Buffer.concat([Buffer.from([0x02]), asn1Len(src.length), src]);
 }
 
 function asn1BitString(buf) {
   const body = Buffer.concat([Buffer.from([0x00]), buf]);
-  return Buffer.concat([Buffer.from([0x03]), asn1Len(buf.length), body]);
+  return Buffer.concat([Buffer.from([0x03]), asn1Len(body.length), body]);
 }
 
 function formatUTCTime(date) {
@@ -189,6 +81,72 @@ function formatUTCTime(date) {
     'Z';
   const buf = Buffer.from(str, 'ascii');
   return Buffer.concat([Buffer.from([0x17]), asn1Len(buf.length), buf]);
+}
+
+function buildSelfSignedCert(pubKeyPem, privKeyPem) {
+  // Extract raw SPKI DER bytes from PEM
+  const pubDer = Buffer.from(
+    pubKeyPem.replace(/-----\w+ PUBLIC KEY-----|\s/g, ''),
+    'base64'
+  );
+
+  // 8-byte random serial number
+  const serialNumber = crypto.randomBytes(8);
+  serialNumber[0] &= 0x7f;
+
+  const notBefore = formatUTCTime(new Date());
+  const notAfter = formatUTCTime(new Date(Date.now() + 365 * 24 * 60 * 60 * 1000));
+
+  // Subject / Issuer Name (CN=localhost, O=eChipHub)
+  const nameDer = asn1Seq([
+    asn1Set([
+      asn1Seq([
+        Buffer.from([0x06, 0x03, 0x55, 0x04, 0x03]),
+        Buffer.from([0x0c, 0x09, ...Buffer.from('localhost')])
+      ])
+    ]),
+    asn1Set([
+      asn1Seq([
+        Buffer.from([0x06, 0x03, 0x55, 0x04, 0x0a]),
+        Buffer.from([0x0c, 0x08, ...Buffer.from('eChipHub')])
+      ])
+    ])
+  ]);
+
+  // sha256WithRSAEncryption
+  const sigAlg = asn1Seq([
+    Buffer.from([0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x0b]),
+    Buffer.from([0x05, 0x00])
+  ]);
+
+  const validity = asn1Seq([notBefore, notAfter]);
+
+  // TBS Certificate
+  const tbs = asn1Seq([
+    Buffer.from([0xa0, 0x03, 0x02, 0x01, 0x02]),
+    asn1Int(serialNumber),
+    sigAlg,
+    nameDer,
+    validity,
+    nameDer,
+    pubDer
+  ]);
+
+  // Sign TBS Certificate
+  const signer = crypto.createSign('SHA256');
+  signer.update(tbs);
+  signer.end();
+  const signature = signer.sign(privKeyPem);
+
+  // Signed Certificate DER
+  const certDer = asn1Seq([
+    tbs,
+    sigAlg,
+    asn1BitString(signature)
+  ]);
+
+  const certB64 = certDer.toString('base64').match(/.{1,64}/g).join('\n');
+  return `-----BEGIN CERTIFICATE-----\n${certB64}\n-----END CERTIFICATE-----\n`;
 }
 
 if (process.argv[1] && process.argv[1].endsWith('generate-cert.js')) {

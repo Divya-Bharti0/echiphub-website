@@ -12,10 +12,10 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
-    <div className="min-h-screen antialiased bg-[#f6f8fc]">
+    <div className="w-full max-w-full min-h-screen antialiased bg-[#f6f8fc] overflow-x-hidden">
       <Navbar />
 
-      <main>
+      <main className="w-full max-w-full overflow-x-hidden">
         <Marquee />
         <Hero />
         <Stats />

@@ -62,7 +62,7 @@ export default function Footer() {
       <div className="relative z-10 max-w-[1400px] mx-auto mt-14 pt-7 border-t border-white/10
         flex flex-wrap items-center justify-between gap-3 text-[13px] text-[#64748b]">
         <span>© {new Date().getFullYear()} eChipHub. All rights reserved.</span>
-        <span className="font-mono tracking-[0.14em] text-[#7dd3fc]/60">RTL → GDSII</span>
+        <span className="font-mono tracking-[0.14em] text-[#7dd3fc]/60">RTL to GDSII</span>
       </div>
     </footer>
   )

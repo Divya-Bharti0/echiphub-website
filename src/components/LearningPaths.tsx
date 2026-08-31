@@ -1,19 +1,19 @@
-import { ArrowRight, CircuitBoard, Cpu, Gauge, Layers3, LockKeyhole, MonitorPlay, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { ArrowRight, CircuitBoard, Cpu, Gauge, Layers3, LockKeyhole, MonitorPlay, Sparkles } from 'lucide-react'
 
 const PATHS = [
   { title: 'RTL Design', desc: 'Build synthesizable digital systems from architecture to clean RTL.', meta: 'Beginner · 4 weeks', icon: CircuitBoard, tone: 'from-blue-50 to-cyan-50' },
-  { title: 'Verification', desc: 'Create robust SystemVerilog testbenches, assertions and coverage plans.', meta: 'Intermediate · 6 weeks', icon: Gauge, tone: 'from-cyan-50 to-sky-50' },
-  { title: 'RISC-V', desc: 'Understand instruction sets, pipelines, hazards and FPGA bring-up.', meta: 'Intermediate · 8 weeks', icon: Cpu, tone: 'from-indigo-50 to-blue-50' },
-  { title: 'Physical Design', desc: 'Move from synthesized netlist through floorplan, route and sign-off.', meta: 'Advanced · 8 weeks', icon: Layers3, tone: 'from-sky-50 to-blue-50' },
+  { title: 'Verification', desc: 'Create robust SystemVerilog testbenches, assertions, and coverage plans.', meta: 'Intermediate · 6 weeks', icon: Gauge, tone: 'from-cyan-50 to-sky-50' },
+  { title: 'RISC-V', desc: 'Understand instruction sets, pipelines, hazards, and FPGA bring-up.', meta: 'Intermediate · 8 weeks', icon: Cpu, tone: 'from-indigo-50 to-blue-50' },
+  { title: 'Physical Design', desc: 'Move from synthesized netlist through floorplan, route, and sign-off.', meta: 'Advanced · 8 weeks', icon: Layers3, tone: 'from-sky-50 to-blue-50' },
   { title: 'EDA Foundations', desc: 'Learn the open-source toolchain behind repeatable chip design workflows.', meta: 'Beginner · 3 weeks', icon: MonitorPlay, tone: 'from-blue-50 to-indigo-50' },
-  { title: 'Tape-out Readiness', desc: 'Practice the checks and decisions that make a design fabrication-ready.', meta: 'Advanced · 10 weeks', icon: LockKeyhole, tone: 'from-cyan-50 to-blue-50' },
+  { title: 'Tape-out Readiness', desc: 'Practice the checks and decisions that make a design fabrication ready.', meta: 'Advanced · 10 weeks', icon: LockKeyhole, tone: 'from-cyan-50 to-blue-50' },
 ]
 
 const LABS = [
-  ['RTL Simulator', 'Write, simulate and inspect your first design.'],
+  ['RTL Simulator', 'Write, simulate, and inspect your first design.'],
   ['Verilog Playground', 'Prototype modules with instant feedback.'],
-  ['OpenLane Flow', 'Run a complete RTL-to-GDSII flow.'],
+  ['OpenLane Flow', 'Run a complete RTL to GDSII flow.'],
   ['GDSII Viewer', 'Inspect layouts and understand sign-off geometry.'],
 ]
 
@@ -26,7 +26,7 @@ export default function LearningPaths() {
           <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div className="max-w-2xl">
               <p className="eyebrow mb-3">Learning paths</p>
-              <h2 className="h2">A clear route from first RTL to tape-out</h2>
+              <h2 className="h2">A clear route from first RTL to tape out</h2>
               <p className="mt-4 text-base leading-7 text-[#64748b] sm:text-lg">Choose a focused path, build practical confidence, and keep every milestone connected to the real semiconductor workflow.</p>
             </div>
             <a href="#courses" className="inline-flex min-h-11 items-center gap-2 self-start rounded-xl border border-[#dbe5f2] px-4 text-sm font-bold text-[#2254C4] transition-colors hover:bg-[#f1f6ff] sm:self-auto">View all courses <ArrowRight className="h-4 w-4" /></a>
@@ -47,7 +47,7 @@ export default function LearningPaths() {
       <section id="virtual-lab" className="section relative overflow-hidden bg-[#07152d] text-white">
         <div className="absolute inset-0 pcb-bg opacity-[0.1] pointer-events-none" />
         <div className="relative mx-auto max-w-[1400px] px-5 sm:px-8">
-          <div className="mb-10 max-w-2xl"><p className="eyebrow mb-3 text-[#7dd3fc]">Virtual labs</p><h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Practice with the tools the industry uses</h2><p className="mt-4 text-base leading-7 text-white/65 sm:text-lg">Cloud-ready workflows, guided experiments and a workspace designed for repeated practice.</p></div>
+          <div className="mb-10 max-w-2xl"><p className="eyebrow mb-3 text-[#7dd3fc]">Virtual labs</p><h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Practice with the tools the industry uses</h2><p className="mt-4 text-base leading-7 text-white/65 sm:text-lg">Cloud-ready workflows, guided experiments, and a workspace designed for repeated practice.</p></div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {LABS.map(([title, desc], index) => <motion.a key={title} href="https://echiphub.in/all-courses/" target="_blank" rel="noopener noreferrer" initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.07 }} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-md transition-colors hover:bg-white/[0.11]"><div className="mb-8 flex items-center justify-between"><span className="font-mono text-xs font-bold tracking-[0.18em] text-[#7dd3fc]">LAB 0{index + 1}</span><Sparkles className="h-5 w-5 text-[#29abe2]" /></div><h3 className="text-lg font-extrabold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/60">{desc}</p><span className="mt-5 inline-flex items-center text-sm font-bold text-[#7dd3fc]">Open lab <ArrowRight className="ml-1 h-4 w-4" /></span></motion.a>)}
           </div>

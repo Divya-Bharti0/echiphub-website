@@ -1,5 +1,5 @@
 import { motion, useInView } from 'framer-motion'
-import { MouseEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDeviceTier } from '../hooks/useDeviceTier'
 import { GALLERY, HIGHLIGHTS, LIFECYCLE, PARTNERS, PROGRAMS, STATS } from '../lib/courseData'
 import ChipGraphic, { MiniIcon } from './ChipGraphic'
@@ -9,10 +9,11 @@ interface HeadingProps {
   title: string
   sub?: string
   light?: boolean
+  id?: string
 }
 
 /* ───────── shared heading ───────── */
-export function Heading({ eyebrow, title, sub, light }: HeadingProps) {
+export function Heading({ eyebrow, title, sub, light, id }: HeadingProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -20,7 +21,7 @@ export function Heading({ eyebrow, title, sub, light }: HeadingProps) {
       className="text-center max-w-[640px] mx-auto mb-14"
     >
       <p className="eyebrow mb-3" style={light ? { color: '#7dd3fc' } : undefined}>{eyebrow}</p>
-      <h2 className="h2" style={light ? { color: '#fff' } : undefined}>{title}</h2>
+      <h2 id={id} className="h2" style={light ? { color: '#fff' } : undefined}>{title}</h2>
       {sub && <p className={`mt-4 text-[17px] leading-relaxed ${light ? 'text-white/70' : 'text-[#64748b]'}`}>{sub}</p>}
     </motion.div>
   )
@@ -60,7 +61,8 @@ export function Stats() {
         <Heading
           eyebrow="At a glance"
           title="Building India's semiconductor workforce"
-          sub="Nationwide participation across NIELIT centres, workshops and certification programmes."
+          sub="Nationwide participation across NIELIT centres, workshops, and certification programs."
+          id="stats-heading"
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {STATS.map((s, i) => (
@@ -101,76 +103,42 @@ export function Stats() {
 }
 
 /* ───────── 2. Key Highlights ───────── */
-function IndiaMap() {
-  const pins = [
-    { x: 46, y: 26, label: 'Ropar' },
-    { x: 52, y: 34, label: 'Noida' },
-    { x: 62, y: 47, label: 'Patna' },
-    { x: 79, y: 51, label: 'Imphal' },
-    { x: 44, y: 68, label: 'South' },
-  ]
-  return (
-    <div className="relative w-full h-full">
-      <svg viewBox="0 0 100 100" className="w-full h-full">
-        <defs>
-          <linearGradient id="ind" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#dbeafe" /><stop offset="100%" stopColor="#bfdbfe" />
-          </linearGradient>
-        </defs>
-        <path d="M40 14 L56 12 L64 20 L70 18 L78 26 L84 40 L80 52 L72 56 L66 52 L62 60 L58 76 L50 90 L42 74 L34 60 L28 44 L32 28 Z"
-          fill="url(#ind)" stroke="#2254C4" strokeWidth="0.7" strokeOpacity="0.45" />
-        {pins.map((p, i) => (
-          <g key={i}>
-            <circle cx={p.x} cy={p.y} r="4.5" fill="#2254C4" opacity="0.14">
-              <animate attributeName="r" values="3;7;3" dur="3s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.22;0;0.22" dur="3s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-            </circle>
-            <circle cx={p.x} cy={p.y} r="1.9" fill="#2254C4" />
-          </g>
-        ))}
-      </svg>
-    </div>
-  )
-}
-
 export function Highlights() {
   return (
-    <section id="highlights" className="section relative bg-white">
-      <div className="max-w-[1400px] mx-auto px-6">
+    <section id="highlights" className="section highlights-section relative bg-white">
+      <div className="max-w-[1440px] mx-auto px-6 w-full">
         <Heading
-          eyebrow="Key Highlights"
+          eyebrow="KEY HIGHLIGHTS"
           title="Why learners choose eChipHub"
           sub="Industry-aligned content, expert mentors and nationwide delivery."
         />
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="highlights-grid">
           {HIGHLIGHTS.map((h, i) => (
             <motion.div
               key={h.title}
               initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.55 }}
               whileHover={{ y: -6 }}
-              className="pcard pcard-hover p-8 group"
+              className="pcard pcard-hover highlight-card group"
             >
-              <div
-                className="relative h-[132px] mb-6 rounded-3xl overflow-hidden flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #f4f8ff 0%, #eaf4fe 100%)', border: '1px solid #e8eef7' }}
-              >
-                {h.kind === 'centers' ? (
-                  <div className="w-[110px] h-[110px] transition-transform duration-500 group-hover:scale-105"><IndiaMap /></div>
-                ) : (
-                  <div className="w-[112px] h-[112px] transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-1">
-                    <ChipGraphic kind={h.kind === 'courses' ? 'rtl' : 'riscv'} className="w-full h-full" id={`hl-${i}`} />
-                  </div>
-                )}
+              <div className="highlight-visual" style={{ background: 'linear-gradient(135deg, #f4f8ff 0%, #eaf4fe 100%)', border: '1px solid #e8eef7' }}>
+                <img
+                  src={h.image}
+                  alt={h.title}
+                  className="highlight-image"
+                  loading="lazy"
+                  draggable={false}
+                />
               </div>
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="w-9 h-9 rounded-xl flex items-center justify-center text-[#2254C4]"
-                  style={{ background: 'linear-gradient(135deg, #eaf2ff, #e0f2fe)' }}>
-                  <MiniIcon kind={h.kind} className="w-[18px] h-[18px]" />
-                </span>
-                <h3 className="text-[19px] font-extrabold text-[#0f172a] tracking-tight">{h.title}</h3>
+              <div className="highlight-copy">
+                <div className="highlight-header">
+                  <span className="highlight-icon" style={{ background: 'linear-gradient(135deg, #eaf2ff, #e0f2fe)' }}>
+                    <MiniIcon kind={h.kind} className="w-[18px] h-[18px]" />
+                  </span>
+                  <h3 className="highlight-title">{h.title}</h3>
+                </div>
+                <p className="highlight-text">{h.desc}</p>
               </div>
-              <p className="text-[14.5px] text-[#64748b] leading-relaxed">{h.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -182,46 +150,46 @@ export function Highlights() {
 /* ───────── 3. Open-Source Lifecycle ───────── */
 export function OpenSource() {
   return (
-    <section id="opensource" className="section relative overflow-hidden"
+    <section id="opensource" className="section open-source-section relative overflow-hidden"
       style={{ background: 'linear-gradient(160deg, #0f2350 0%, #14315f 55%, #0B1220 100%)' }}>
       <div className="absolute inset-0 pcb-bg opacity-[0.09] pointer-events-none" />
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(41,171,226,.16) 0%, transparent 70%)' }} />
 
-      <div className="relative max-w-[1400px] mx-auto px-6">
+      <div className="relative max-w-[1440px] mx-auto px-6 w-full">
         <Heading light eyebrow="Open-Source First" title="An Open-Source First EdTech Platform"
-          sub="Advancing semiconductor education & innovation with open EDA toolchains — from RTL entry to fabrication-ready GDSII." />
+          sub="Advancing semiconductor education and innovation with open EDA toolchains, from RTL design to fabrication ready GDSII." />
 
-        <div className="relative">
-          {/* connecting line */}
-          <div className="hidden lg:block absolute top-[46px] left-[10%] right-[10%] h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(125,211,252,.45) 15%, rgba(125,211,252,.45) 85%, transparent)' }} />
-
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="journey-shell relative">
+          <div className="journey-line hidden lg:block" />
+          <div className="journey-grid">
             {LIFECYCLE.map((s, i) => (
               <motion.div
                 key={s.name}
                 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.11, duration: 0.5 }}
                 whileHover={{ y: -6 }}
-                className="relative rounded-[28px] p-6 text-center"
-                style={{
-                  background: 'rgba(255,255,255,.055)',
-                  border: '1px solid rgba(255,255,255,.11)',
-                  backdropFilter: 'blur(14px)',
-                  boxShadow: '0 18px 40px rgba(0,0,0,.24)',
-                }}
+                className="journey-card"
               >
-                <div className="w-[74px] h-[74px] mx-auto mb-4 rounded-full flex items-center justify-center"
-                  style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,.14), rgba(255,255,255,.03))', border: '1px solid rgba(125,211,252,.26)' }}>
-                  <ChipGraphic
-                    kind={['rtl', 'timing', 'openlane', 'analog', 'gds'][i]}
-                    className="w-[54px] h-[54px]" id={`lc-${i}`}
-                  />
+                <div className="journey-icon-wrap flex items-center justify-center overflow-hidden p-1.5 rounded-full">
+                  {s.image ? (
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      loading="lazy"
+                      className="w-full h-full object-contain object-center rounded-full"
+                      draggable={false}
+                    />
+                  ) : (
+                    <ChipGraphic
+                      kind={s.kind || ['rtl', 'timing', 'openlane', 'analog', 'gds'][i]}
+                      className="w-[52px] h-[52px] object-contain" id={`lc-${i}`}
+                    />
+                  )}
                 </div>
-                <span className="text-[11px] font-mono font-bold tracking-widest text-[#7dd3fc]">{s.n}</span>
-                <h3 className="text-[16px] font-extrabold text-white mt-1 mb-1.5 tracking-tight">{s.name}</h3>
-                <p className="text-[12.5px] text-white/60 leading-snug">{s.desc}</p>
+                <span className="journey-step">{s.n}</span>
+                <h3 className="journey-title">{s.name}</h3>
+                <p className="journey-desc">{s.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -238,7 +206,7 @@ export function Programs() {
       <div className="max-w-[1400px] mx-auto px-6">
         <Heading
           eyebrow="Programmes"
-          title="Workshops, Courses & Virtual Labs"
+          title="Workshops, Courses, and Virtual Labs"
           sub="Three complementary tracks that take learners from fundamentals to fabrication readiness."
         />
         <div className="grid md:grid-cols-3 gap-6">
@@ -253,12 +221,13 @@ export function Programs() {
               whileHover={{ y: -6 }}
               className="pcard pcard-hover overflow-hidden group block"
             >
-              <div className="relative h-[168px] overflow-hidden flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #f0f6ff 0%, #e4f1fd 100%)' }}>
-                <div className="absolute inset-0 pcb-bg opacity-50" />
-                <div className="relative w-[124px] h-[124px] transition-transform duration-[600ms] ease-out group-hover:scale-110 group-hover:-translate-y-1.5">
-                  <ChipGraphic kind={['timing', 'rtl', 'openlane'][i]} className="w-full h-full" id={`pg-${i}`} />
-                </div>
+              <div className="programs-image-wrap">
+                <img
+                  src={new URL(`../../Website Image/${p.image}`, import.meta.url).href}
+                  alt={p.title}
+                  loading="lazy"
+                  className="programs-image"
+                />
               </div>
               <div className="p-7">
                 <div className="flex items-center gap-2.5 mb-3">
@@ -284,39 +253,49 @@ export function Programs() {
 
 /* ───────── 5. Collaborations ───────── */
 export function Collaborations() {
+  const marqueePartners = [...PARTNERS, ...PARTNERS, ...PARTNERS]
+
   return (
-    <section id="alliances" className="section relative">
-      <div className="max-w-[1200px] mx-auto px-6">
-        <Heading
-          eyebrow="Alliances"
-          title="Institutional Collaborations"
-          sub="Delivered under a MeitY-supported project in partnership with national institutions."
-        />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {PARTNERS.map((p, i) => (
-            <motion.a
-              key={p.name}
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.5 }}
-              whileHover={{ y: -5 }}
-              className="pcard pcard-hover flex flex-col items-center justify-center gap-4 px-6 py-9 group"
-              style={{ borderRadius: 28 }}
-            >
-              <img
-                src={p.src}
-                alt={p.name}
-                loading="lazy"
-                className="h-[52px] w-auto object-contain transition-all duration-500 group-hover:scale-[1.06]"
-                style={{ filter: 'saturate(.82) contrast(.96)' }}
-                onMouseEnter={(e: MouseEvent<HTMLImageElement>) => { e.currentTarget.style.filter = 'saturate(1.06) contrast(1)' }}
-                onMouseLeave={(e: MouseEvent<HTMLImageElement>) => { e.currentTarget.style.filter = 'saturate(.82) contrast(.96)' }}
-              />
-              <span className="text-[13px] font-semibold text-[#64748b] group-hover:text-[#2254C4] transition-colors">{p.name}</span>
-            </motion.a>
-          ))}
+    <section id="alliances" className="our-collaborations section relative">
+      <div className="our-collaborations-inner">
+        <div className="our-collaborations-header">
+          <h2 className="our-collaborations-title"><span>Our</span> <strong>Collaborations</strong></h2>
+          <div className="collaboration-stat" aria-label="3,068 learners reached through collaborations">
+            <strong>3,068</strong>
+            <span>Learners reached through<br />institutional collaborations</span>
+          </div>
+        </div>
+
+        <div className="collaboration-divider" />
+
+        <div className="collaboration-marquee" aria-label="Our collaboration partners">
+          <div className="collaboration-marquee-track">
+            {marqueePartners.map((partner, index) => (
+              <motion.a
+                key={`${partner.name}-${index}`}
+                href={partner.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: (index % PARTNERS.length) * 0.08, duration: 0.45 }}
+                className="collaboration-logo group"
+              >
+                <img
+                  src={partner.src}
+                  alt={partner.name}
+                  loading="lazy"
+                  className="h-[64px] w-auto object-contain transition-transform duration-500 group-hover:scale-[1.05]"
+                />
+              </motion.a>
+            ))}
+          </div>
+        </div>
+
+        <div className="collaboration-badges" aria-label="Collaboration highlights">
+          <span><i className="badge-dot badge-dot-blue" />MeitY Supported Initiative</span>
+          <span><i className="badge-dot badge-dot-blue" />NIELIT Certified</span>
+          <span><i className="badge-dot badge-dot-green" />Open-Source First</span>
+          <span><i className="badge-dot badge-dot-green" />Government of India Backed</span>
         </div>
       </div>
     </section>
@@ -333,26 +312,52 @@ export function Gallery() {
           title="Inside the ChipCraft Virtual Labs"
           sub="Real design flows executed by learners on open-source EDA toolchains."
         />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="gallery-grid">
           {GALLERY.map((g, i) => (
             <motion.figure
               key={g.title}
-              initial={{ opacity: 0, scale: 0.96 }} whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }} transition={{ delay: (i % 3) * 0.09, duration: 0.5 }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: (i % 3) * 0.08, duration: 0.45 }}
               whileHover={{ y: -6 }}
-              className="pcard pcard-hover overflow-hidden group"
-              style={{ borderRadius: 28 }}
+              className="gallery-card"
             >
-              <div className="relative h-[188px] overflow-hidden flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #eef5ff 0%, #e2eefb 100%)' }}>
-                <div className="absolute inset-0 pcb-bg opacity-60" />
-                <div className="relative w-[130px] h-[130px] transition-transform duration-[650ms] ease-out group-hover:scale-[1.12] group-hover:-translate-y-1">
-                  <ChipGraphic kind={g.kind} className="w-full h-full" id={`gl-${i}`} />
-                </div>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400"
-                  style={{ background: 'linear-gradient(to top, rgba(15,35,80,.55) 0%, transparent 55%)' }} />
+              <div className="gallery-image-wrap">
+                <img
+                  src={new URL(`../../Website Image/${g.image}`, import.meta.url).href}
+                  alt={g.title}
+                  loading="lazy"
+                  className="gallery-image"
+                />
               </div>
-              <figcaption className="px-6 py-5 text-[15px] font-bold text-[#0f172a] tracking-tight">{g.title}</figcaption>
+
+              <figcaption className="gallery-content">
+                <div className="gallery-card-body">
+                  <div className="gallery-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" className="gallery-icon-svg" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 12h12" />
+                      <path d="M13 5l7 7-7 7" />
+                    </svg>
+                  </div>
+
+                  <h3 className="gallery-title">{g.title}</h3>
+                  <p className="gallery-description">{g.description}</p>
+                </div>
+
+                <div className="gallery-footer">
+                  <div className="gallery-tag-row">
+                    {g.tags.map((tag) => (
+                      <span key={`${g.title}-${tag}`} className="gallery-tag">{tag}</span>
+                    ))}
+                  </div>
+
+                  <span className="gallery-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" className="gallery-arrow-svg" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14" />
+                      <path d="M13 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+              </figcaption>
             </motion.figure>
           ))}
         </div>

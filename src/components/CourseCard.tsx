@@ -1,7 +1,6 @@
 import { useRef, useState, useCallback, MouseEvent } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { STATUS_META, COURSE_URL, Course } from '../lib/courseData'
-import ChipGraphic from './ChipGraphic'
 import { useDeviceTier } from '../hooks/useDeviceTier'
 
 interface CourseCardProps {
@@ -80,13 +79,19 @@ export default function CourseCard({ course, isActive }: CourseCardProps) {
 
           {/* circular 3D course visual */}
           <div className="relative mt-3 mb-6" style={{ transform: 'translateZ(36px)' }}>
-            <div className="visual-ring w-[168px] h-[168px] flex items-center justify-center">
+            <div className="visual-ring w-[168px] h-[168px] flex items-center justify-center p-2 rounded-full overflow-hidden">
               <motion.div
-                animate={{ scale: hover && isActive ? 1.09 : 1, y: hover && isActive ? -4 : 0 }}
+                animate={{ scale: hover && isActive ? 1.06 : 1, y: hover && isActive ? -3 : 0 }}
                 transition={{ type: 'spring' as const, stiffness: 220, damping: 20 }}
-                className="w-[128px] h-[128px]"
+                className="w-full h-full overflow-hidden rounded-full border border-white/60 bg-slate-900/10 shadow-[inset_0_2px_12px_rgba(0,0,0,0.15)] flex items-center justify-center"
               >
-                <ChipGraphic kind={course.kind} className="w-full h-full" id={`cc-${course.id}`} />
+                <img
+                  src={course.img}
+                  alt={course.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-center rounded-full"
+                  draggable={false}
+                />
               </motion.div>
             </div>
             {!reduced && (

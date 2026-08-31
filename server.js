@@ -19,15 +19,6 @@ const serveDir = fs.existsSync(distDir) ? distDir : __dirname;
 
 console.log(`[eChipHub Server] Serving static root from: ${serveDir}`);
 
-// Load or generate valid SSL certificates
-let credentials;
-try {
-  credentials = ensureCertificates();
-} catch (err) {
-  console.error('[SSL Setup] Failed to obtain SSL certificates:', err.message);
-  process.exit(1);
-}
-
 // MIME type map
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -64,11 +55,10 @@ function setSecurityHeaders(res) {
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 }
 
-// Request handler for HTTPS server
+// Request handler for server
 function handleRequest(req, res) {
   setSecurityHeaders(res);
 
-  // Clean URL path
   let parsedUrl;
   try {
     parsedUrl = new URL(req.url, `https://${req.headers.host || 'localhost'}`);
@@ -145,35 +135,63 @@ function handleRequest(req, res) {
   }
 }
 
-// Create HTTPS server
-const httpsServer = https.createServer(
-  {
-    cert: credentials.cert,
-    key: credentials.key
-  },
-  handleRequest
-);
+// Start HTTPS server with graceful HTTP fallback
+let httpsActive = false;
+try {
+  const credentials = ensureCertificates();
+  const httpsServer = https.createServer(
+    {
+      cert: credentials.cert,
+      key: credentials.key
+    },
+    handleRequest
+  );
 
-httpsServer.listen(HTTPS_PORT, () => {
-  console.log(`
+  httpsServer.on('error', (err) => {
+    console.warn('[eChipHub Server] HTTPS server error, falling back to HTTP:', err.message);
+    startHttpFallback();
+  });
+
+  httpsServer.listen(HTTPS_PORT, () => {
+    httpsActive = true;
+    console.log(`
 ============================================================
   eChipHub Live Production HTTPS/SSL Server Active
 ============================================================
   HTTPS Server:  https://localhost:${HTTPS_PORT}/
   Secure Host:   https://127.0.0.1:${HTTPS_PORT}/
-  SSL Standard:  TLSv1.2 / TLSv1.3 (Self-Signed PKCS#8 RSA)
 ============================================================
-  `);
-});
+    `);
+  });
+} catch (err) {
+  console.warn('[eChipHub Server] HTTPS initialization warning:', err.message);
+  startHttpFallback();
+}
 
-// Create HTTP-to-HTTPS Redirection Server
-const httpServer = http.createServer((req, res) => {
+function startHttpFallback() {
+  if (httpsActive) return;
+  const httpServer = http.createServer(handleRequest);
+  httpServer.listen(HTTPS_PORT, () => {
+    console.log(`
+============================================================
+  eChipHub Live Production Server Active (HTTP Mode)
+============================================================
+  Server URL:    http://localhost:${HTTPS_PORT}/
+============================================================
+    `);
+  });
+}
+
+// Create HTTP-to-HTTPS Redirection Server on HTTP_PORT
+const redirectServer = http.createServer((req, res) => {
   const host = (req.headers.host || 'localhost').split(':')[0];
-  const redirectUrl = `https://${host}:${HTTPS_PORT}${req.url}`;
+  const redirectUrl = httpsActive
+    ? `https://${host}:${HTTPS_PORT}${req.url}`
+    : `http://${host}:${HTTPS_PORT}${req.url}`;
   res.writeHead(301, { Location: redirectUrl });
   res.end(`Redirecting to ${redirectUrl}`);
 });
 
-httpServer.listen(HTTP_PORT, () => {
-  console.log(`  HTTP Redirect: http://localhost:${HTTP_PORT}/ -> https://localhost:${HTTPS_PORT}/`);
+redirectServer.listen(HTTP_PORT, () => {
+  console.log(`  HTTP Redirect: http://localhost:${HTTP_PORT}/ -> ${HTTPS_PORT}`);
 });

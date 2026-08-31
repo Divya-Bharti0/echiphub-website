@@ -1,5 +1,5 @@
 import { AnimatePresence, Transition, motion } from 'framer-motion'
-import { PointerEvent as ReactPointerEvent, TouchEvent as ReactTouchEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { PointerEvent as ReactPointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDeviceTier } from '../hooks/useDeviceTier'
 import { COURSES, Course, FILTERS, FilterItem } from '../lib/courseData'
 import CourseCard from './CourseCard'
@@ -81,19 +81,21 @@ export default function CourseCatalog({ modalOpen }: CourseCatalogProps) {
   }, [go, modalOpen])
 
   /* ── drag / swipe ── */
-  const onDown = (e: ReactPointerEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
-    const x = 'clientX' in e ? e.clientX : e.touches?.[0]?.clientX ?? 0
+  const onDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const x = e.clientX
     drag.current = { on: true, x, t: Date.now() }
     paused.current = true
+    e.currentTarget.setPointerCapture(e.pointerId)
   }
-  const onUp = (e: ReactPointerEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
+  const onUp = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (!drag.current.on) return
     drag.current.on = false
-    const x = 'clientX' in e ? e.clientX : e.changedTouches?.[0]?.clientX ?? 0
+    const x = e.clientX
     const dx = x - drag.current.x
     const v = Math.abs(dx) / Math.max(Date.now() - drag.current.t, 1)
     if (Math.abs(dx) > 45 || v > 0.35) go(dx < 0 ? 1 : -1)
     paused.current = false
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId)
   }
 
   const onFilter = (k: FilterItem['key']) => { setFilter(k); setActive(0) }
@@ -134,7 +136,7 @@ export default function CourseCatalog({ modalOpen }: CourseCatalogProps) {
           className="text-center max-w-[620px] mx-auto mb-10"
         >
           <p className="eyebrow mb-3">Interactive Course Catalog</p>
-          <h2 className="h2">Semiconductor &amp; EDA Design Courses</h2>
+          <h2 className="h2">Semiconductor and EDA Design Courses</h2>
           <p className="mt-4 text-[#64748b] text-[17px] leading-relaxed">
             Explore cutting-edge semiconductor and EDA design courses delivered across NIELIT centres.
           </p>
@@ -176,8 +178,7 @@ export default function CourseCatalog({ modalOpen }: CourseCatalogProps) {
           onMouseLeave={() => { paused.current = false; drag.current.on = false }}
           onPointerDown={onDown}
           onPointerUp={onUp}
-          onTouchStart={onDown}
-          onTouchEnd={onUp}
+          onPointerCancel={onUp}
           role="region"
           aria-roledescription="carousel"
           aria-label="Course catalog"

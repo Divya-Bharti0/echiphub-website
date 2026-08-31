@@ -13,27 +13,27 @@ export interface Course {
 export const COURSES: Course[] = [
   {
     id: 1, status: 'completed', centre: 'Noida Center', kind: 'rtl',
-    img: 'https://echiphub.in/wp-content/uploads/2026/02/microchip.png',
-    title: 'RTL Design & Verification using Verilog & SystemVerilog',
+    img: new URL('../../Website Image/verilog.png', import.meta.url).href,
+    title: 'RTL Design and Verification using Verilog and SystemVerilog',
     desc: 'Master digital logic design, Verilog simulation, testbench creation, and synthesis workflows with hands-on projects.',
   },
   {
     id: 2, status: 'live', centre: 'Ropar Center', kind: 'openlane',
-    img: 'https://echiphub.in/wp-content/uploads/2026/02/technology-1.png',
-    title: 'Physical Design & OpenLane EDA Flow',
+    img: new URL('../../Website Image/Neon OpenLane EDA Flow Chip Infographic.png', import.meta.url).href,
+    title: 'Physical Design and OpenLane EDA Flow',
     desc: 'Hands-on ASIC physical design flow from RTL synthesis to GDSII layout using OpenLane and Magic tools.',
   },
   {
     id: 3, status: 'upcoming', centre: 'Imphal Center', kind: 'riscv',
-    img: 'https://echiphub.in/wp-content/uploads/2026/02/team.png',
-    title: 'RISC-V Microarchitecture & Processor Design',
+    img: new URL('../../Website Image/Risc-v.png', import.meta.url).href,
+    title: 'RISC-V Microarchitecture and Processor Design',
     desc: 'Learn RISC-V ISA specification, pipelined core design, hazard management, and FPGA prototyping techniques.',
   },
   {
     id: 4, status: 'live', centre: 'Patna Center', kind: 'analog',
-    img: 'https://echiphub.in/wp-content/uploads/2026/02/graduation.png',
-    title: 'Analog & Mixed-Signal IC Design with Qflow',
-    desc: 'Explore analog circuit modeling, SPICE simulation, amplifier layout, and DRC/LVS physical verification.',
+    img: new URL('../../Website Image/Neon Mixed-Signal IC Design Infographic.png', import.meta.url).href,
+    title: 'Analog and Mixed-Signal IC Design with Qflow',
+    desc: 'Explore analog circuit modeling, SPICE simulation, amplifier layout, and DRC and LVS physical verification.',
   },
 ]
 
@@ -84,6 +84,7 @@ export interface HighlightItem {
   kind: string
   title: string
   desc: string
+  image: string
 }
 
 export const HIGHLIGHTS: HighlightItem[] = [
@@ -91,16 +92,19 @@ export const HIGHLIGHTS: HighlightItem[] = [
     kind: 'courses',
     title: 'Digital Smart Courses',
     desc: 'Structured, industry-aligned semiconductor courses delivered online with cloud-hosted virtual labs and reproducible lab demonstrations.',
+    image: new URL('../../Website Image/Course BG 1.png', import.meta.url).href,
   },
   {
     kind: 'experts',
     title: 'Industry Experts',
     desc: 'Learn directly from practising semiconductor engineers and academic mentors with real tape-out and EDA tool experience.',
+    image: new URL('../../Website Image/Event 02.jpeg', import.meta.url).href,
   },
   {
     kind: 'centers',
     title: 'Multiple Centers',
-    desc: 'NIELIT centres across India — Noida, Ropar, Imphal, Patna and more — deliver the programme nationwide.',
+    desc: 'NIELIT centres across India, including Noida, Ropar, Imphal, and Patna, deliver the program nationwide.',
+    image: new URL('../../Website Image/nielit6.jpeg', import.meta.url).href,
   },
 ]
 
@@ -108,14 +112,16 @@ export interface LifecycleItem {
   n: string
   name: string
   desc: string
+  image?: string
+  kind?: string
 }
 
 export const LIFECYCLE: LifecycleItem[] = [
-  { n: '01', name: 'RTL',             desc: 'Verilog / SystemVerilog design entry' },
-  { n: '02', name: 'Verification',    desc: 'Testbenches, coverage & formal checks' },
-  { n: '03', name: 'Synthesis',       desc: 'Yosys RTL → gate-level netlist' },
-  { n: '04', name: 'Physical Design', desc: 'Floorplan, place & route via OpenLane' },
-  { n: '05', name: 'GDSII',           desc: 'Sign-off and layout ready for fabrication' },
+  { n: '01', name: 'RTL',             desc: 'Verilog and SystemVerilog design entry',       kind: 'rtl',      image: new URL('../../Website Image/verilog.png', import.meta.url).href },
+  { n: '02', name: 'Verification',    desc: 'Testbenches, coverage, and formal checks',     kind: 'timing',   image: new URL('../../Website Image/DFT.jpeg', import.meta.url).href },
+  { n: '03', name: 'Synthesis',       desc: 'Yosys RTL to gate level netlist',              kind: 'riscv',    image: new URL('../../Website Image/Asset-1.png', import.meta.url).href },
+  { n: '04', name: 'Physical Design', desc: 'Floorplanning, placement, and routing via OpenLane', kind: 'openlane', image: new URL('../../Website Image/05-1.jpg', import.meta.url).href },
+  { n: '05', name: 'GDSII',           desc: 'Sign off and layout ready for fabrication',   kind: 'gds',      image: new URL('../../Website Image/08.png', import.meta.url).href },
 ]
 
 export interface ProgramItem {
@@ -124,22 +130,25 @@ export interface ProgramItem {
   desc: string
   href: string
   cta: string
+  image: string
 }
 
 export const PROGRAMS: ProgramItem[] = [
   {
     kind: 'workshops',
     title: 'Workshops',
-    desc: 'Live and recorded sessions with industry engineers covering EDA flows, verification and tape-out readiness.',
+    desc: 'Live and recorded sessions with industry engineers covering EDA flows, verification, and tape out readiness.',
     href: 'https://echiphub.in/all-courses/',
     cta: 'View Workshops',
+    image: 'Workshop BG Final (1).jpg',
   },
   {
     kind: 'courses',
     title: 'Courses',
-    desc: 'NSQF-aligned bootcamps and the 90-hour ChipCraft course taking learners through the complete RTL-to-GDSII flow.',
+    desc: 'NSQF-aligned bootcamps and the 90-hour ChipCraft course taking learners through the complete RTL to GDSII flow.',
     href: 'https://echiphub.in/all-courses/',
     cta: 'Browse Courses',
+    image: 'new-course.jpeg',
   },
   {
     kind: 'labs',
@@ -147,6 +156,7 @@ export const PROGRAMS: ProgramItem[] = [
     desc: 'ChipCraft Virtual Labs provide cloud-hosted, pre-configured open-source EDA toolchains accessible from anywhere.',
     href: 'https://echiphub.in/all-courses/',
     cta: 'Enter Labs',
+    image: 'SOC.jpeg',
   },
 ]
 
@@ -166,15 +176,54 @@ export const PARTNERS: PartnerItem[] = [
 export interface GalleryItem {
   title: string
   kind: string
+  image: string
+  description: string
+  tags: string[]
 }
 
 export const GALLERY: GalleryItem[] = [
-  { title: 'RTL Simulation Lab',      kind: 'rtl' },
-  { title: 'OpenLane Physical Design', kind: 'openlane' },
-  { title: 'RISC-V Core Bring-up',    kind: 'riscv' },
-  { title: 'Analog & Mixed-Signal',   kind: 'analog' },
-  { title: 'Timing Sign-off',         kind: 'timing' },
-  { title: 'GDSII Tape-out',          kind: 'gds' },
+  {
+    title: 'RTL Simulation Lab',
+    kind: 'rtl',
+    image: 'RTL-1.jpeg',
+    description: 'Covers logic entry in Verilog and VHDL and verifying hardware behavioral models before physical implementation.',
+    tags: ['RTL', 'Verification'],
+  },
+  {
+    title: 'OpenLane Physical Design',
+    kind: 'openlane',
+    image: '05-1.jpg',
+    description: 'An automated RTL to GDSII flow performing synthesis, floorplanning, placement, clock tree synthesis, and routing using open-source EDA tools.',
+    tags: ['OpenLane', 'PD'],
+  },
+  {
+    title: 'RISC-V Core Bring-up',
+    kind: 'riscv',
+    image: 'SOC.jpeg',
+    description: 'Design, simulation, and software execution on open-standard RISC-V CPU core pipelines.',
+    tags: ['RISC-V', 'SoC'],
+  },
+  {
+    title: 'Analog and Mixed-Signal',
+    kind: 'analog',
+    image: 'tile1-1024x683.jpeg',
+    description: 'Simulating non-digital interfaces, such as ADCs, DACs, and Phase-Locked Loops.',
+    tags: ['AMS', 'SPICE'],
+  },
+  {
+    title: 'Timing Sign-off',
+    kind: 'timing',
+    image: 'DFT.jpeg',
+    description: 'Static Timing Analysis to check path delays, crosstalk, setup, and hold time constraints across corners.',
+    tags: ['STA', 'Timing'],
+  },
+  {
+    title: 'GDSII Tape-out',
+    kind: 'gds',
+    image: '08.png',
+    description: 'Final DRC and LVS physical verification and export to standard GDSII layout format ready for foundry manufacturing.',
+    tags: ['GDSII', 'Tape-out'],
+  },
 ]
 
 export interface AnnouncementItem {
@@ -186,7 +235,7 @@ export interface AnnouncementItem {
 export const ANNOUNCEMENTS: AnnouncementItem[] = [
   {
     tag: 'INTERNSHIP UPDATE',
-    text: 'Certification exam results for eChipHub Internship Program-2026 (Attempt 1)',
+    text: 'Certification exam results for eChipHub Internship Program 2026 (Attempt 1)',
     href: 'https://echiphub.in/wp-content/uploads/2026/08/eChipHub_Internship_Provisional_List_5June_to_31July_2026.pdf',
   },
   {
@@ -196,7 +245,7 @@ export const ANNOUNCEMENTS: AnnouncementItem[] = [
   },
   {
     tag: 'SELECTED CANDIDATES',
-    text: 'eChipHub Internship Program (Summer 2026) — list of Selected candidates',
+    text: 'eChipHub Internship Program (Summer 2026) list of selected candidates',
     href: 'https://echiphub.in/wp-content/uploads/2026/06/Selected-Candidate-List-eChipHub-Internship-Program-Summer-2026.pdf',
   },
   {

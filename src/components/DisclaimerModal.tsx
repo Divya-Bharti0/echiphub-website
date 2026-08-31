@@ -91,8 +91,8 @@ export default function DisclaimerModal({ open, onClose }: DisclaimerModalProps)
                   </p>
                   <p className="leading-[1.9] text-[17px] text-white text-justify">
                     This platform hosts various open-source Electronic Design Automation (EDA) tools
-                    and workflows, including but not limited to ventilator, Yosys, OpenLane, Qflow,
-                    Magic, Netgen, Klayout, OpenSTA etc.
+                    and workflows, including Verilator, Yosys, OpenLane, Qflow,
+                    Magic, Netgen, KLayout, OpenSTA, and other tools.
                   </p>
                 </div>
 
@@ -113,7 +113,7 @@ export default function DisclaimerModal({ open, onClose }: DisclaimerModalProps)
                   className="btn-shine w-full sm:w-auto px-16 py-[18px] rounded-full text-white text-[17px] font-bold
                              transition-all duration-300 hover:-translate-y-0.5"
                   style={{ background: 'linear-gradient(135deg, #ff8c42 0%, #e55a1f 100%)', boxShadow: '0 10px 26px rgba(229,90,31,.36)' }}>
-                  I Agree &amp; Continue
+                  I Agree and Continue
                 </button>
                 <button onClick={onClose}
                   className="w-full sm:w-auto px-10 py-[18px] rounded-full text-white/90 text-[16px] font-semibold
