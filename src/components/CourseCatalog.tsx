@@ -170,70 +170,78 @@ export default function CourseCatalog({ modalOpen }: CourseCatalogProps) {
         </div>
 
         {/* ── coverflow stage ── */}
-        <div
-          ref={stageRef}
-          className="course-catalog-stage relative select-none overflow-hidden"
-          style={{ height: isMobile ? 'min(600px, 154vw)' : 620, perspective: 1600 }}
-          onMouseEnter={() => { paused.current = true }}
-          onMouseLeave={() => { paused.current = false; drag.current.on = false }}
-          onPointerDown={onDown}
-          onPointerUp={onUp}
-          onPointerCancel={onUp}
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Course catalog"
-        >
-          <AnimatePresence initial={false}>
-            {visible.map((c, i) => {
-              const s = slotFor(i)
-              if (!s) return null
-              return (
-                <motion.div
-                  key={c.id}
-                  className="course-catalog-card absolute top-0 left-1/2"
-                  style={{
-                    width: isMobile ? 'min(86vw, 360px)' : 380,
-                    marginLeft: isMobile ? 'min(-43vw, -180px)' : -190,
-                    zIndex: s.z,
-                    transformStyle: 'preserve-3d',
-                  }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{
-                    opacity: s.opacity,
-                    scale: s.scale,
-                    x: `${s.x}%`,
-                    rotateY: s.rotateY,
-                    z: s.translateZ,
-                    filter: 'blur(0px)',
-                  }}
-                  exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.25 } }}
-                  transition={SPRING}
-                >
-                  <div className={s.d === 0 ? '' : 'pointer-events-none'}>
-                    <CourseCard course={c} isActive={s.d === 0} />
-                  </div>
-                  {/* click-catcher for side cards */}
-                  {s.d !== 0 && (
-                    <button
-                      onClick={() => setActive(i)}
-                      aria-label={`Show ${c.title}`}
-                      className="absolute inset-0 cursor-pointer"
-                      style={{ background: 'transparent' }}
-                    />
-                  )}
-                </motion.div>
-              )
-            })}
-          </AnimatePresence>
+        <div className="relative">
+          <div
+            ref={stageRef}
+            className="course-catalog-stage relative select-none overflow-hidden"
+            style={{ height: isMobile ? 'min(600px, 154vw)' : 620, perspective: 1600 }}
+            onMouseEnter={() => { paused.current = true }}
+            onMouseLeave={() => { paused.current = false; drag.current.on = false }}
+            onPointerDown={onDown}
+            onPointerUp={onUp}
+            onPointerCancel={onUp}
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Course catalog"
+          >
+            <AnimatePresence initial={false}>
+              {visible.map((c, i) => {
+                const s = slotFor(i)
+                if (!s) return null
+                return (
+                  <motion.div
+                    key={c.id}
+                    className="course-catalog-card absolute top-0 left-1/2"
+                    style={{
+                      width: isMobile ? 'min(86vw, 360px)' : 380,
+                      marginLeft: isMobile ? 'min(-43vw, -180px)' : -190,
+                      zIndex: s.z,
+                      transformStyle: 'preserve-3d',
+                    }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{
+                      opacity: s.opacity,
+                      scale: s.scale,
+                      x: `${s.x}%`,
+                      rotateY: s.rotateY,
+                      z: s.translateZ,
+                      filter: 'blur(0px)',
+                    }}
+                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.25 } }}
+                    transition={SPRING}
+                  >
+                    <div className={s.d === 0 ? '' : 'pointer-events-none'}>
+                      <CourseCard course={c} isActive={s.d === 0} />
+                    </div>
+                    {/* click-catcher for side cards */}
+                    {s.d !== 0 && (
+                      <button
+                        onClick={() => setActive(i)}
+                        aria-label={`Show ${c.title}`}
+                        className="absolute inset-0 cursor-pointer"
+                        style={{ background: 'transparent' }}
+                      />
+                    )}
+                  </motion.div>
+                )
+              })}
+            </AnimatePresence>
+          </div>
 
           {/* prev / next */}
-          <button onClick={() => go(-1)} aria-label="Previous course"
-            className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white border border-[#e6ecf5] text-[#2254C4] flex items-center justify-center transition-all duration-300 hover:-translate-y-[calc(50%+2px)] hover:border-[#2254C4]/30"
+          <button 
+            type="button"
+            onClick={() => go(-1)} 
+            aria-label="Previous courses"
+            className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white border border-[#e6ecf5] text-[#2254C4] flex items-center justify-center transition-all duration-300 hover:-translate-y-[calc(50%+2px)] hover:border-[#2254C4]/30 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-[#2254C4] focus:ring-offset-2"
             style={{ boxShadow: '0 6px 20px rgba(16,32,64,.10)' }}>
             <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
           </button>
-          <button onClick={() => go(1)} aria-label="Next course"
-            className="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white border border-[#e6ecf5] text-[#2254C4] flex items-center justify-center transition-all duration-300 hover:-translate-y-[calc(50%+2px)] hover:border-[#2254C4]/30"
+          <button 
+            type="button"
+            onClick={() => go(1)} 
+            aria-label="Next courses"
+            className="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white border border-[#e6ecf5] text-[#2254C4] flex items-center justify-center transition-all duration-300 hover:-translate-y-[calc(50%+2px)] hover:border-[#2254C4]/30 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-[#2254C4] focus:ring-offset-2"
             style={{ boxShadow: '0 6px 20px rgba(16,32,64,.10)' }}>
             <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
           </button>
