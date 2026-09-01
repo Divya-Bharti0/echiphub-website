@@ -57,3 +57,7 @@ Thumbs.db
 # Vite & TS cache / build info
 .vite/
 *.tsbuildinfo
+
+# Local runtime & diagnostics (VS Code, Chrome, debugging)
+.chrome-runtime-profile/
+.runtime-diagnostics/
