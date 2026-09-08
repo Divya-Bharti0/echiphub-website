@@ -13,8 +13,6 @@ const NAV = [
   { name: 'More',       href: '#more' },
 ]
 
-interface NavbarProps {}
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen]         = useState(false)
@@ -23,7 +21,7 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 12)
-      const secs = ['#alliances', '#virtual-lab', '#learning-paths', '#opensource', '#highlights', '#courses']
+      const secs = ['#alliances', '#virtual-lab', '#workshops', '#opensource', '#highlights', '#courses']
       let cur = '#'
       for (const s of secs) {
         const el = document.querySelector(s)

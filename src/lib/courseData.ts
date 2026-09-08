@@ -173,6 +173,19 @@ export const PARTNERS: PartnerItem[] = [
   { name: 'SCL Mohali', src: 'https://echiphub.in/wp-content/uploads/2026/07/scllogo1.png',     href: 'https://www.scl.gov.in/' },
 ]
 
+export interface CollaborationOrgItem {
+  name: string
+  src: string
+  href?: string
+}
+
+export const COLLABORATION_ORGS: CollaborationOrgItem[] = [
+  { name: 'NSUT', src: new URL('../../Website Image/NSUT_logo.png', import.meta.url).href },
+  { name: 'AICTE', src: new URL('../../Website Image/Aicte.png', import.meta.url).href },
+  { name: 'DTU', src: new URL('../../Website Image/DTU_logo (2).png', import.meta.url).href },
+  { name: 'Tata Electronics', src: new URL('../../Website Image/Tata Electronics Corporate Logo.png', import.meta.url).href },
+]
+
 export interface GalleryItem {
   title: string
   kind: string

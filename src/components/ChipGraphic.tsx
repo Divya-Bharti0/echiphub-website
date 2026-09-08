@@ -1,4 +1,4 @@
-import React, { JSX } from 'react'
+import React from 'react'
 
 const GRADS = (id: string) => (
   <defs>
@@ -173,7 +173,7 @@ function dieGDS() {
   )
 }
 
-const DIE: Record<string, () => JSX.Element> = {
+const DIE: Record<string, () => React.JSX.Element> = {
   rtl: dieRTL, openlane: dieOpenLane, riscv: dieRISCV,
   analog: dieAnalog, timing: dieTiming, gds: dieGDS,
 }
@@ -210,7 +210,7 @@ export function MiniIcon({ kind, className = 'w-7 h-7' }: MiniIconProps) {
     strokeLinejoin: "round",
     viewBox: "0 0 24 24",
   };
-  const paths: Record<string, JSX.Element> = {
+  const paths: Record<string, React.JSX.Element> = {
     users:   <><path d="M16 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 20v-2a4 4 0 0 0-3.87-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
     badge:   <><circle cx="12" cy="8" r="6" /><path d="M8.21 13.89 7 22l5-3 5 3-1.21-8.11" /></>,
     deck:    <><rect x="3" y="4" width="18" height="14" rx="2" /><path d="M8 20h8M12 18v2" /></>,

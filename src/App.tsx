@@ -6,6 +6,7 @@ import { Hero } from './components/Hero.tsx'
 import LearningPaths from './components/LearningPaths.tsx'
 import Marquee from './components/Marquee.tsx'
 import Navbar from './components/Navbar.tsx'
+import SiteAnalytics from './components/SiteAnalytics.tsx'
 import { Collaborations, Gallery, Highlights, OpenSource, Programs, Stats } from './components/Sections.tsx'
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <OpenSource />
         <Programs />
         <Collaborations />
+        <SiteAnalytics />
         <Gallery />
       </main>
 

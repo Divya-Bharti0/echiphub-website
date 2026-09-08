@@ -1,7 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useDeviceTier } from '../hooks/useDeviceTier'
-import { GALLERY, HIGHLIGHTS, LIFECYCLE, PARTNERS, PROGRAMS, STATS } from '../lib/courseData'
+import { COLLABORATION_ORGS, GALLERY, HIGHLIGHTS, LIFECYCLE, PROGRAMS, STATS } from '../lib/courseData'
 import ChipGraphic, { MiniIcon } from './ChipGraphic'
 
 interface HeadingProps {
@@ -253,41 +253,77 @@ export function Programs() {
 
 /* ───────── 5. Collaborations ───────── */
 export function Collaborations() {
-  const marqueePartners = [...PARTNERS, ...PARTNERS, ...PARTNERS]
+  const [isHovering, setIsHovering] = useState(false)
+
+  // Order matching the reference screenshot: AICTE -> DEL TECH (DTU) -> TATA ELECTRONICS -> NSUT
+  const orderedOrgs = [
+    COLLABORATION_ORGS.find(o => o.name === 'AICTE') || COLLABORATION_ORGS[1],
+    COLLABORATION_ORGS.find(o => o.name === 'DTU') || COLLABORATION_ORGS[2],
+    COLLABORATION_ORGS.find(o => o.name === 'Tata Electronics') || COLLABORATION_ORGS[3],
+    COLLABORATION_ORGS.find(o => o.name === 'NSUT') || COLLABORATION_ORGS[0],
+  ]
+
+  // Repeat for continuous seamless horizontal loop
+  const collaborationGroup = [
+    ...orderedOrgs,
+    ...orderedOrgs,
+  ]
 
   return (
     <section id="alliances" className="our-collaborations section relative">
       <div className="our-collaborations-inner">
         <div className="our-collaborations-header">
           <h2 className="our-collaborations-title"><span>Our</span> <strong>Collaborations</strong></h2>
-          <div className="collaboration-stat" aria-label="3,068 learners reached through collaborations">
-            <strong>3,068</strong>
-            <span>Learners reached through<br />institutional collaborations</span>
+          <div className="collaboration-stat" aria-label="3,901 students trained through our academic & industry collaborations in 2025-2026">
+            <strong>3,901</strong>
+            <span>Students trained through our academic &amp;<br />industry collaborations in 2025-2026.</span>
           </div>
         </div>
 
         <div className="collaboration-divider" />
 
-        <div className="collaboration-marquee" aria-label="Our collaboration partners">
-          <div className="collaboration-marquee-track">
-            {marqueePartners.map((partner, index) => (
-              <motion.a
-                key={`${partner.name}-${index}`}
-                href={partner.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: (index % PARTNERS.length) * 0.08, duration: 0.45 }}
-                className="collaboration-logo group"
-              >
-                <img
-                  src={partner.src}
-                  alt={partner.name}
-                  loading="lazy"
-                  className="h-[64px] w-auto object-contain transition-transform duration-500 group-hover:scale-[1.05]"
-                />
-              </motion.a>
-            ))}
+        {/* Collaboration logos continuous marquee */}
+        <div
+          className={`collaboration-carousel-container ${isHovering ? 'is-paused' : ''}`}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onFocus={() => setIsHovering(true)}
+          onBlur={() => setIsHovering(false)}
+          aria-label="Collaboration organizations carousel"
+        >
+          <div className="collaboration-carousel-track">
+            <div className="collaboration-marquee-group">
+              {collaborationGroup.map((org, index) => (
+                <div key={`collab-item-a-${index}`} className="collaboration-carousel-item">
+                  <div className="collaboration-logo-wrapper">
+                    <img
+                      src={org.src}
+                      alt={org.name}
+                      loading="lazy"
+                      className="collaboration-logo-image"
+                      draggable={false}
+                    />
+                  </div>
+                  <div className="collaboration-logo-divider" aria-hidden="true" />
+                </div>
+              ))}
+            </div>
+            <div className="collaboration-marquee-group" aria-hidden="true">
+              {collaborationGroup.map((org, index) => (
+                <div key={`collab-item-b-${index}`} className="collaboration-carousel-item">
+                  <div className="collaboration-logo-wrapper">
+                    <img
+                      src={org.src}
+                      alt=""
+                      loading="lazy"
+                      className="collaboration-logo-image"
+                      draggable={false}
+                    />
+                  </div>
+                  <div className="collaboration-logo-divider" aria-hidden="true" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
