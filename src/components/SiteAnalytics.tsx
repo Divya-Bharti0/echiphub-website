@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Activity,
   ArrowDownRight,
@@ -9,14 +9,9 @@ import {
   ChevronDown,
   Clock,
   Download,
-  Eye,
-  Filter,
   Globe,
-  MapPin,
   Search,
-  Sparkles,
   TrendingUp,
-  User,
   Users,
   X,
 } from 'lucide-react'
